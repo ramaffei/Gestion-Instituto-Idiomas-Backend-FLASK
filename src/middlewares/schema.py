@@ -1,0 +1,22 @@
+from flask_marshmallow import Marshmallow
+from marshmallow import SchemaOpts
+
+marshmallow = Marshmallow()
+
+class BaseSchemaOpts(SchemaOpts):
+
+    def __init__(self, meta, **kwargs):
+        super().__init__(meta, **kwargs)
+        self.allow_none = getattr(meta, 'allow_none', ())
+        self.required = getattr(meta, 'required', ())
+
+class BaseSchema(marshmallow.Schema):
+
+    OPTIONS_CLASS = BaseSchemaOpts
+
+    def on_bind_field(self, field_name, field_obj):
+        super().on_bind_field(field_name, field_obj)
+        if field_name in self.opts.allow_none:
+            field_obj.allow_none = True
+        if field_name in self.opts.required:
+            field_obj.required = True

@@ -1,0 +1,98 @@
+from src.services.alumnos import consultarAlumnosPorCurso
+from src.exceptions.errors import ObjectNotFound
+from src.models.cursos import Curso, CursoHorario, CursoModSchema, CursoSchema, Horario, HorarioSchema
+
+def agregarCurso(args):
+    curso = Curso(**args)
+    curso.save()
+    return CursoSchema().dump(curso)
+
+def mostrarCurso(id):
+    curso = Curso.get_by_id(id)
+    if curso is None:
+        raise ObjectNotFound('El curso no existe')
+    return CursoSchema().dump(curso)
+
+def mostrarCursos():
+    cursos = Curso.get_all()
+    return CursoSchema().dump(cursos[0], many=True), cursos[1], cursos[2]
+
+def actualizarCurso(id, args):
+    curso = Curso.get_by_id(id)
+    if curso is None:
+        raise ObjectNotFound('El curso no existe')
+    cursoSchema = CursoSchema().load(args)
+    curso.update(cursoSchema)
+    return CursoSchema().dump(curso)
+
+def borrarCurso(id):
+    curso = Curso.get_by_id(id)
+    if curso is None:
+        raise ObjectNotFound('El curso no existe')
+    curso.delete()
+    return CursoSchema().dump(curso)
+
+def agregarHorario(args):
+    horario = Horario(**args)
+    horario.save()
+    return HorarioSchema().dump(horario)
+
+def actualizarHorario(id, args):
+    horario = Horario.get_by_id(id)
+    if horario is None:
+        raise ObjectNotFound('El horario no existe')
+    horarioSchema = HorarioSchema().load(args)
+    horario.update(horarioSchema)
+    return HorarioSchema().dump(horario)
+
+def vincularHorario(args):
+    cursoHorario = CursoHorario(**args)
+    cursoHorario.save()
+    return {"estado": True}
+
+def listarCursosInscripcion():
+    cursos = Curso.get_all()
+    cursosMod = []
+
+    for curso in cursos[0]:
+        alumnos = consultarAlumnosPorCurso(curso.id)
+        cursosMod.append( {
+            'id': curso.id,
+            'nombre': curso.nombre,
+            'horario': curso.horario,
+            'cupo': calcularCupo(curso, alumnos),
+            'descripcion': curso.descripcion,
+            'estado_inscripcion': verificarInscripcion(curso, alumnos),
+            'representacion': curso.aula.representacion
+        })
+    
+    return CursoModSchema().dump(cursosMod, many=True)
+
+def listarCursoMod(id):
+    curso = Curso.get_by_id(id)
+    if curso is None:
+        raise ObjectNotFound('El curso no existe')
+    alumnos = consultarAlumnosPorCurso(id)
+    cursoMod = {
+            'id': curso.id,
+            'nombre': curso.nombre,
+            'horario': curso.horario,
+            'cupo': calcularCupo(curso, alumnos),
+            'descripcion': curso.descripcion,
+            'estado_inscripcion': verificarInscripcion(curso, alumnos),
+            'representacion': curso.aula.representacion
+        }
+    
+    return CursoModSchema().dump(cursoMod)
+
+def calcularCupo(curso, alumnos):
+    cant_alumnos = len(alumnos)
+    cant_maxima = curso.max_alumnos if curso.max_alumnos else curso.aula.cant_ideal
+    return f'{cant_alumnos}/{cant_maxima}'
+    
+def verificarInscripcion(curso, alumnos):
+    cant_alumnos = len(alumnos)
+    cant_maxima = curso.max_alumnos if curso.max_alumnos else curso.aula.cant_ideal
+    if cant_alumnos < cant_maxima:
+        return True
+    return False
