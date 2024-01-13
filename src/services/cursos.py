@@ -63,8 +63,15 @@ def listarCursosInscripcion():
             'cupo': calcularCupo(curso, alumnos),
             'descripcion': curso.descripcion,
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
-            'representacion': curso.aula.representacion
+            'aula': curso.aula.nombre,
         })
+        try:
+            if curso.nivel:
+                cursosMod[-1]['nivel'] = curso.nivel.nombre
+                cursosMod[-1]['idioma'] = curso.nivel.idioma
+        except IndexError:
+            pass
+        
     
     return CursoModSchema().dump(cursosMod, many=True)
 

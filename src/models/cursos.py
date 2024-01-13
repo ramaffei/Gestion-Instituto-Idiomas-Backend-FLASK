@@ -116,7 +116,8 @@ class CursoSchema(BaseSchema):
 
 class CursoModSchema(BaseSchema):
     horario = fields.Nested("HorarioSchema", many=True)
+    idioma = fields.Nested("LenguajeSchema")
     class Meta:
-        fields = ('id', 'nombre', 'horario', 'cupo', 'descripcion','representacion','estado_inscripcion')
+        fields = ('id', 'nombre', 'horario', 'cupo', 'descripcion','representacion','estado_inscripcion', 'nivel', 'idioma')
         unknown = EXCLUDE
         ordered = True
