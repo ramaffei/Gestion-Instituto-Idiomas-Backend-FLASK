@@ -53,7 +53,6 @@ def vincularHorario(args):
 def listarCursosInscripcion():
     cursos = Curso.get_all()
     cursosMod = []
-
     for curso in cursos[0]:
         alumnos = consultarAlumnosPorCurso(curso.id)
         cursosMod.append( {
@@ -64,11 +63,14 @@ def listarCursosInscripcion():
             'descripcion': curso.descripcion,
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
             'aula': curso.aula.nombre,
+
         })
         try:
             if curso.nivel:
                 cursosMod[-1]['nivel'] = curso.nivel.nombre
                 cursosMod[-1]['idioma'] = curso.nivel.idioma
+                cursosMod[-1]['programa'] = curso.nivel.programa
+                cursosMod[-1]['material'] = curso.nivel.material
         except IndexError:
             pass
         
@@ -80,6 +82,7 @@ def listarCursoMod(id):
     if curso is None:
         raise ObjectNotFound('El curso no existe')
     alumnos = consultarAlumnosPorCurso(id)
+    print(curso)
     cursoMod = {
             'id': curso.id,
             'nombre': curso.nombre,
@@ -87,9 +90,15 @@ def listarCursoMod(id):
             'cupo': calcularCupo(curso, alumnos),
             'descripcion': curso.descripcion,
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
-            'representacion': curso.aula.representacion
+            'representacion': curso.aula.representacion,
+            'programa': curso.programa,
+            'material': curso.material
         }
     
+    if curso.nivel:
+        cursoMod['nivel'] = curso.nivel.nombre
+        cursoMod['idioma'] = curso.nivel.idioma
+
     return CursoModSchema().dump(cursoMod)
 
 def calcularCupo(curso, alumnos):
