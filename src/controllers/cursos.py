@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from flask import request
 from src.services.cursos import actualizarCurso, actualizarHorario, agregarCurso, agregarHorario, borrarCurso, listarCursoMod, listarCursosInscripcion, mostrarCurso, mostrarCursos, vincularHorario
@@ -26,6 +27,7 @@ class CursoTodosMod(Resource):
         return listarCursosInscripcion(), 200
     
 class CursoIndMod(Resource):
+    @jwt_required()
     def get(self, id):
         return listarCursoMod(id), 200
 

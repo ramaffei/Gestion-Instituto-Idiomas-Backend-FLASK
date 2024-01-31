@@ -91,13 +91,13 @@ def listarCursoMod(id):
             'descripcion': curso.descripcion,
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
             'representacion': curso.aula.representacion,
-            'programa': curso.programa,
-            'material': curso.material
         }
     
     if curso.nivel:
         cursoMod['nivel'] = curso.nivel.nombre
         cursoMod['idioma'] = curso.nivel.idioma
+        cursoMod['programa'] = curso.nivel.programa
+        cursoMod['material'] = curso.nivel.material
 
     return CursoModSchema().dump(cursoMod)
 

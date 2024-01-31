@@ -1,7 +1,8 @@
+from datetime import datetime, timedelta, timezone
 from flask import Flask, got_request_exception
 
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
 from src.exceptions.errors import custom_api_error_handler
 from src.exceptions.httpExceptions import register_error_handlers
 
@@ -23,16 +24,38 @@ def create_app(settings_module):
    app = Flask(__name__)
    app.config.from_object(settings_module)
    app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+   app.config["JWT_TOKEN_LOCATION"] = ['cookies']
+   app.config["JWT_COOKIE_CSRF_PROTECT"] = True
+   """    app.config["JWT_COOKIE_DOMAIN"] = 'localhost:5000'
+   app.config["JWT_COOKIE_SECURE"] = False """
    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
-
+   app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
+   
    # Inicializa las extensiones
    db.init_app(app)
    marshmallow.init_app(app)
    migrate.init_app(app, db)
 
-   cors = CORS(app, resources={r'/*': {'origins':'*'}})
+   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
    jwt = JWTManager(app)
-
+   
+   @app.after_request
+   def refresh_expiring_jwts(response):
+      try:
+         exp_timestamp = get_jwt()["exp"]
+         now = datetime.now(timezone.utc)
+         target_timestamp = datetime.timestamp(now + timedelta(minutes=5))
+         print('target', target_timestamp)
+         print('exp', exp_timestamp)
+         if target_timestamp > exp_timestamp:
+               print('update token')
+               access_token = create_access_token(identity=get_jwt_identity())
+               set_access_cookies(response, access_token)
+         return response
+      except (RuntimeError, KeyError):
+         # Case where there is not a valid JWT. Just return the original response
+         return response
+   
    # Deshabilita el modo estricto de acabado de una URL con /
    app.url_map.strict_slashes = False
 
@@ -46,8 +69,8 @@ def create_app(settings_module):
    app.register_blueprint(archivos_bp, url_prefix='/archivos')
    
    # Registra manejadores de errores personalizados
-#if settings_module != 'config.local':
-   got_request_exception.connect(custom_api_error_handler, app)
-   register_error_handlers(app)
+   if settings_module != 'config.local':
+      got_request_exception.connect(custom_api_error_handler, app)
+      register_error_handlers(app)
    return app
 

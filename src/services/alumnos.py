@@ -1,3 +1,6 @@
+from datetime import datetime
+from flask import jsonify
+from flask_jwt_extended import create_access_token, set_access_cookies
 from src.exceptions.errors import ObjectNotFound, UnAuthorize
 from src.models.alumnos import Alumno, AlumnoCursoSchema, AlumnoSchema, AlumnosCursos
 import pandas as pd
@@ -49,7 +52,12 @@ def registrarAlumno(dni, email):
         decode_email = f'{decode_email}@{parts_email[1]}'
         raise UnAuthorize(f'El correo registrado para el dni ingresado es: {decode_email}') 
     
-    return AlumnoSchema().dump(alumno)
+    alumno_json = AlumnoSchema().dump(alumno)
+
+    access_token = create_access_token(identity=alumno_json)
+    response = jsonify({'alumno': alumno_json})
+    set_access_cookies(response, access_token)
+    return response
 
 def consultarAlumnosPorCurso(curso_id):
     alumnos = Alumno.query.filter(Alumno.cursos.any(id = curso_id) ).all()
