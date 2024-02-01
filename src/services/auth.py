@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask import jsonify
 from src.exceptions.errors import ObjectNotFound, UnAuthorize
-from flask_jwt_extended import create_access_token, set_access_cookies
+from flask_jwt_extended import create_access_token, set_access_cookies, unset_access_cookies
 from src.models.usuarios import Usuario, UsuarioSchema
 
 def logIn(args):
@@ -20,4 +20,9 @@ def logIn(args):
     usuario.save()
     response = jsonify({'usuario': usuario_json})
     set_access_cookies(response, access_token)
+    return response
+
+def logOut():
+    response = jsonify({'msg': 'logout exitoso'})
+    unset_access_cookies(response)
     return response

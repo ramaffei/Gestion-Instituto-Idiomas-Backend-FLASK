@@ -69,8 +69,8 @@ def create_app(settings_module):
    app.register_blueprint(archivos_bp, url_prefix='/archivos')
    
    # Registra manejadores de errores personalizados
-   if settings_module != 'config.local':
-      got_request_exception.connect(custom_api_error_handler, app)
-      register_error_handlers(app)
+   #if settings_module != 'config.local':
+   got_request_exception.connect(custom_api_error_handler, app)
+   register_error_handlers(app)
    return app
 
