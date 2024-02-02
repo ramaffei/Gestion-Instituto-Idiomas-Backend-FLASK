@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import jsonify
 from flask_jwt_extended import create_access_token, set_access_cookies
+import jwt
 from src.exceptions.errors import ObjectNotFound, UnAuthorize
 from src.models.alumnos import Alumno, AlumnoCursoSchema, AlumnoSchema, AlumnosCursos
 import pandas as pd
@@ -68,3 +69,4 @@ def exportAlumnosPorCurso(curso_id):
     df_json = pd.DataFrame(alumnos)
     df_json.to_excel('curso.xlsx', index=False, header=True)
     return {'result': 'ok'}
+

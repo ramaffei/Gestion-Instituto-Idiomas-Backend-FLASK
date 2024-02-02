@@ -1,3 +1,4 @@
+from flask_jwt_extended import current_user, jwt_required
 from flask_restful import Resource
 from flask import request
 from src.services.alumnos import actualizarAlumno, agregarAlumno, borrarAlumno, mostrarAlumno, mostrarAlumnos,consultarAlumnosPorCurso, exportAlumnosPorCurso, registrarAlumno
@@ -11,6 +12,7 @@ class AlumnosTodos(Resource):
         return agregarAlumno(data), 201
 
 class AlumnoInd(Resource):
+    @jwt_required()
     def get(self, id):
         return mostrarAlumno(id), 200
 
@@ -22,6 +24,9 @@ class AlumnoInd(Resource):
         return borrarAlumno(id), 200
     
 class AlumnosLogin(Resource):
+    @jwt_required()
+    def get(self):
+        return current_user, 200
 
     def post(self):
         data = request.get_json()

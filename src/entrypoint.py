@@ -38,6 +38,15 @@ def create_app(settings_module):
 
    cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
    jwt = JWTManager(app)
+
+   def user_identity_lookup(alumno):
+      return alumno
+
+   @jwt.user_lookup_loader
+   def user_lookup_callback(_jwt_header, jwt_data):
+      identity = jwt_data["sub"]
+      print(identity)
+      return identity
    
    @app.after_request
    def refresh_expiring_jwts(response):
@@ -70,7 +79,7 @@ def create_app(settings_module):
    
    # Registra manejadores de errores personalizados
    #if settings_module != 'config.local':
-   got_request_exception.connect(custom_api_error_handler, app)
-   register_error_handlers(app)
+   """ got_request_exception.connect(custom_api_error_handler, app)
+   register_error_handlers(app) """
    return app
 
