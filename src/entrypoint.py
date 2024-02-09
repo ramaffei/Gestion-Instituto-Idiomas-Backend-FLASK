@@ -3,6 +3,7 @@ from flask import Flask, got_request_exception
 
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
+from src.services.alumnos import mostrarAlumno
 from src.exceptions.errors import custom_api_error_handler
 from src.exceptions.httpExceptions import register_error_handlers
 
@@ -46,7 +47,7 @@ def create_app(settings_module):
    def user_lookup_callback(_jwt_header, jwt_data):
       identity = jwt_data["sub"]
       print(identity)
-      return identity
+      return mostrarAlumno(identity)
    
    @app.after_request
    def refresh_expiring_jwts(response):
@@ -79,7 +80,7 @@ def create_app(settings_module):
    
    # Registra manejadores de errores personalizados
    #if settings_module != 'config.local':
-   """ got_request_exception.connect(custom_api_error_handler, app)
-   register_error_handlers(app) """
+   got_request_exception.connect(custom_api_error_handler, app)
+   register_error_handlers(app)
    return app
 

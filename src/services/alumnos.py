@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_jwt_extended import create_access_token, set_access_cookies
 import jwt
+from src.models.cursos import Curso, CursoSchema
 from src.exceptions.errors import ObjectNotFound, UnAuthorize
 from src.models.alumnos import Alumno, AlumnoCursoSchema, AlumnoSchema, AlumnosCursos
 import pandas as pd
@@ -9,11 +10,18 @@ import pandas as pd
 def agregarAlumno(args):
     alumnoSchema = AlumnoSchema().load(args)
     alumno = Alumno(**alumnoSchema)
+
+    curso_id = args.get('curso_id')
+    if curso_id:
+        try:
+            comprobarCursoAlumno(curso_id, alumno)
+            comprobarIdiomaAlumno(curso_id, alumno)
+            cursos_alumnos = AlumnosCursos(curso_id = curso_id, alumno_id = alumno.id)
+            cursos_alumnos.save()
+        except:
+            raise ObjectNotFound('Ocurrio un error al inscribirte a este curso')
+        
     alumno.save()
-    print(args)
-    if args.get('curso_id'):
-        cursos_alumnos = AlumnosCursos(curso_id = args.get('curso_id'), alumno_id = alumno.id)
-        cursos_alumnos.save()
     return AlumnoSchema().dump(alumno)
 
 def mostrarAlumno(id):
@@ -31,6 +39,17 @@ def actualizarAlumno(id, args):
     if alumno is None:
         raise ObjectNotFound('El alumno no existe')
     alumnoSchema = AlumnoSchema().load(args)
+    
+    curso_id = args.get('curso_id')
+    if curso_id:
+        try:
+            comprobarCursoAlumno(curso_id, alumno)
+            comprobarIdiomaAlumno(curso_id, alumno)
+            cursos_alumnos = AlumnosCursos(curso_id = curso_id, alumno_id = alumno.id)
+            cursos_alumnos.save()
+        except:
+            raise ObjectNotFound('Ocurrio un error al inscribirte a este curso')
+        
     alumno.update(alumnoSchema)
     return AlumnoSchema().dump(alumno)
 
@@ -55,7 +74,7 @@ def registrarAlumno(dni, email):
     
     alumno_json = AlumnoSchema().dump(alumno)
 
-    access_token = create_access_token(identity=alumno_json)
+    access_token = create_access_token(identity=alumno.id)
     response = jsonify({'alumno': alumno_json})
     set_access_cookies(response, access_token)
     return response
@@ -70,3 +89,11 @@ def exportAlumnosPorCurso(curso_id):
     df_json.to_excel('curso.xlsx', index=False, header=True)
     return {'result': 'ok'}
 
+def comprobarCursoAlumno(curso_id, alumno):
+    if any(c.id == curso_id for c in alumno.cursos):
+        raise ObjectNotFound("Ya te encuentras inscripto a este curso")
+        
+def comprobarIdiomaAlumno(curso_id, alumno):
+    curso = Curso.get_by_id(curso_id)
+    if curso and any(i.id == curso.nivel.idioma.id for i in alumno.idiomas):
+        raise ObjectNotFound('Ya te encuentras inscripto a un curso de este idioma')
