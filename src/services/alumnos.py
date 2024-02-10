@@ -1,8 +1,8 @@
 from datetime import datetime
 from flask import jsonify
 from flask_jwt_extended import create_access_token, set_access_cookies
-import jwt
 from sqlalchemy import and_
+from src.middlewares.mail import send_email
 from src.models.cursos import Curso, CursoSchema
 from src.exceptions.errors import ObjectNotFound, UnAuthorize
 from src.models.alumnos import Alumno, AlumnoCursoSchema, AlumnoSchema, AlumnosCursos
@@ -96,6 +96,10 @@ def exportAlumnosPorCurso(curso_id):
     df_json = pd.DataFrame(alumnos)
     df_json.to_excel('curso.xlsx', index=False, header=True)
     return {'result': 'ok'}
+
+def enviarCorreoInscripcion(data):
+    print(data)
+    send_email('Bienvenido a Oxford!', 'noresponder@oxfordaltagracia.com.ar', ['rodrigoa.maffei@gmail.com'], 'Hola, tu inscripcion se realizo correctamente al curso: ')
 
 def comprobarCursoAlumno(curso_id, alumno):
     if any(c.id == curso_id for c in alumno.cursos):

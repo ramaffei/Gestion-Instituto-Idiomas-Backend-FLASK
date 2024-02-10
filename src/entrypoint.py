@@ -9,6 +9,7 @@ from src.exceptions.httpExceptions import register_error_handlers
 
 from src.middlewares.db import db, migrate
 from src.middlewares.schema import marshmallow
+from src.middlewares.mail import mail
 
 from src.routes.alumnos import alumnos_bp
 from src.routes.aulas import aulas_bp
@@ -27,8 +28,6 @@ def create_app(settings_module):
    app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
    app.config["JWT_TOKEN_LOCATION"] = ['cookies']
    app.config["JWT_COOKIE_CSRF_PROTECT"] = True
-   """    app.config["JWT_COOKIE_DOMAIN"] = 'localhost:5000'
-   app.config["JWT_COOKIE_SECURE"] = False """
    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=30)
    
@@ -36,6 +35,7 @@ def create_app(settings_module):
    db.init_app(app)
    marshmallow.init_app(app)
    migrate.init_app(app, db)
+   mail.init_app(app)
 
    cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
    jwt = JWTManager(app)
