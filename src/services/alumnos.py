@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_jwt_extended import create_access_token, set_access_cookies
 import jwt
+from sqlalchemy import and_
 from src.models.cursos import Curso, CursoSchema
 from src.exceptions.errors import ObjectNotFound, UnAuthorize
 from src.models.alumnos import Alumno, AlumnoCursoSchema, AlumnoSchema, AlumnosCursos
@@ -78,6 +79,13 @@ def registrarAlumno(dni, email):
     response = jsonify({'alumno': alumno_json})
     set_access_cookies(response, access_token)
     return response
+
+def desasociarAlumnoCurso(data):
+    curso_alumno = AlumnosCursos.query.filter(and_(AlumnosCursos.curso_id == data.get('curso_id'), AlumnosCursos.alumno_id == data.get('alumno_id'))).first()
+    if curso_alumno is None:
+        raise ObjectNotFound('Ocurrio un problema al desincribirte del curso')
+    curso_alumno.delete()
+    return {'msg': 'Te desincribiste al curso'}
 
 def consultarAlumnosPorCurso(curso_id):
     alumnos = Alumno.query.filter(Alumno.cursos.any(id = curso_id) ).all()
