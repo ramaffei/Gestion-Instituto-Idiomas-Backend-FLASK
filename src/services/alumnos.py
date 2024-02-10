@@ -99,7 +99,36 @@ def exportAlumnosPorCurso(curso_id):
 
 def enviarCorreoInscripcion(data):
     print(data)
-    send_email('Bienvenido a Oxford!', 'noresponder@oxfordaltagracia.com.ar', ['rodrigoa.maffei@gmail.com'], 'Hola, tu inscripcion se realizo correctamente al curso: ')
+    curso_id = data.get('curso_id')
+    curso = Curso.get_by_id(curso_id)
+    if curso is None:
+        raise ObjectNotFound('No se encontro el curso')
+    
+    alumno_id = data.get('alumno_id')
+    alumno = Alumno.get_by_id(alumno_id)
+    if alumno is None:
+        raise ObjectNotFound('No se encontro el alumno')
+    
+    html = f"""<h3>Bienvenido a Oxford!</h2>
+    <p>Te encuentras inscripto en el siguiente curso:</p>
+    <h3 style="margin-bottom:10px;">{curso.nombre}</h3>"""
+
+    for horario in curso.horario:
+        horario_text = f'<p style="color: blue; margin-bottom: 6px; margin-top:6px;">{horario.diaSemana} de {horario.horaInicio} a {horario.horaFin}</p>'
+        html = html+horario_text
+    
+    html = html+'<p style="margin-top:10px; margin-bottom: 6px;"><b>Archivos Utiles:</b></p>'
+    programa = f'<span><a href="{curso.nivel.programa}">Descargar Programa</a></span>'
+    material = f'<span><a href="{curso.nivel.material}">Descargar Guia de Materiales</a></span>'
+
+    html = html+programa
+    html = html+material
+
+    html = '<p style="margin-top:10px; margin-bottom: 6px;">Estos son los datos que tenemos en nuestro sistema:</p>'
+    
+    html = html+'<p>Nos vemos pronto!</p>'
+
+    send_email('Bienvenido a Oxford!', 'noresponder@oxfordaltagracia.com.ar', [alumno.email], '',html_body=html)
 
 def comprobarCursoAlumno(curso_id, alumno):
     if any(c.id == curso_id for c in alumno.cursos):
