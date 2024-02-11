@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import jsonify
+from flask import current_app, jsonify
 from flask_jwt_extended import create_access_token, set_access_cookies
 from sqlalchemy import and_
 from src.middlewares.mail import send_email
@@ -109,26 +109,32 @@ def enviarCorreoInscripcion(data):
     if alumno is None:
         raise ObjectNotFound('No se encontro el alumno')
     
-    html = f"""<h3>Bienvenido a Oxford!</h2>
+    html = f"""<body style='color: black; font-weigh: 600;'><h3>Bienvenido {alumno.nombre} a Oxford!</h2>
     <p>Te encuentras inscripto en el siguiente curso:</p>
-    <h3 style="margin-bottom:10px;">{curso.nombre}</h3>"""
+    <h3 style="margin-bottom:6px;">{curso.nombre}</h3>"""
 
     for horario in curso.horario:
-        horario_text = f'<p style="color: blue; margin-bottom: 6px; margin-top:6px;">{horario.diaSemana} de {horario.horaInicio} a {horario.horaFin}</p>'
+        horario_text = f'<p style="color: blue; margin-bottom: 0px; margin-top:0px;">{horario.diaSemana} de {horario.horaInicio} a {horario.horaFin}</p>'
         html = html+horario_text
     
-    html = html+'<p style="margin-top:10px; margin-bottom: 6px;"><b>Archivos Utiles:</b></p>'
-    programa = f'<span><a href="{curso.nivel.programa}">Descargar Programa</a></span>'
-    material = f'<span><a href="{curso.nivel.material}">Descargar Guia de Materiales</a></span>'
+    html = html+'<p style="margin-top:12px; margin-bottom: 3px;"><b>Archivos Utiles:</b></p>'
+    programa = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.programa}">Descargar Programa</a></p>'
+    material = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.material}">Descargar Guia de Materiales</a></p>'
 
     html = html+programa
     html = html+material
 
-    html = '<p style="margin-top:10px; margin-bottom: 6px;">Estos son los datos que tenemos en nuestro sistema:</p>'
+    html = html + '<p style="margin-top:12px; margin-bottom: 3px;">Estos son los datos que tenemos en nuestro sistema:</p>'
     
-    html = html+'<p>Nos vemos pronto!</p>'
+    alumno_datos = f"""<p style="margin-bottom:0px; margin-top:1px;"><b>DNI:</b> { alumno.dni }</p style="margin-bottom:0px; margin-top:1px;">
+    <p style="margin-bottom:0px; margin-top:1px;"><b>Fecha de Nacimiento:</b> { alumno.fecha_nacimiento }</p style="margin-bottom:0px; margin-top:1px;">
+    <p style="margin-bottom:0px; margin-top:1px;"><b>Nombre Completo:</b> { alumno.nombre_completo }</p style="margin-bottom:0px; margin-top:1px;">
+    <p>Si alguno de estos datos es incorrecto por favor comunicate con el instituto para rectificarlos.
+    """
+    html = html+alumno_datos
+    html = html+'<p>Nos vemos pronto!</p></body>'
 
-    send_email('Bienvenido a Oxford!', 'noresponder@oxfordaltagracia.com.ar', [alumno.email], '',html_body=html)
+    send_email('Bienvenido a Oxford!', ('Oxford Alta Gracia', 'noresponder@oxfordaltagracia.com.ar'), [alumno.email], '',html_body=html)
 
 def comprobarCursoAlumno(curso_id, alumno):
     if any(c.id == curso_id for c in alumno.cursos):
