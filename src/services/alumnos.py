@@ -29,7 +29,7 @@ def mostrarAlumno(id):
     alumno = Alumno.get_by_id(id)
     if alumno is None:
         raise ObjectNotFound('El alumno no existe')
-    return AlumnoSchema().dumps(alumno)
+    return AlumnoSchema().dump(alumno)
 
 def mostrarAlumnos():
     alumnos = Alumno.get_all()
