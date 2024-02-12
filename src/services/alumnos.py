@@ -20,7 +20,7 @@ def agregarAlumno(args):
             cursos_alumnos = AlumnosCursos(curso_id = curso_id, alumno_id = alumno.id)
             cursos_alumnos.save()
         except:
-            raise ObjectNotFound('Ocurrio un error al inscribirte a este curso')
+            raise ObjectNotFound('Ocurrió un error al inscribirte a este curso')
         
     alumno.save()
     return AlumnoSchema().dump(alumno)
@@ -63,9 +63,11 @@ def borrarAlumno(id):
 
 def registrarAlumno(dni, email):
     alumno = Alumno.get_by_dni(dni)
+
     if alumno is None:
-        return agregarAlumno({'dni': dni, 'email': email})
-    
+        alumno = Alumno({'dni': dni, 'email': email})
+        alumno.save()
+
     if not alumno.email == email:
         parts_email = alumno.email.rsplit("@")
         decode_email = parts_email[0][-3:]
@@ -77,6 +79,7 @@ def registrarAlumno(dni, email):
 
     access_token = create_access_token(identity=alumno.id)
     response = jsonify({'alumno': alumno_json})
+    print(response)
     set_access_cookies(response, access_token)
     return response
 
