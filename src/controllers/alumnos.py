@@ -12,7 +12,6 @@ class AlumnosTodos(Resource):
         return agregarAlumno(data), 201
 
 class AlumnoInd(Resource):
-    @jwt_required()
     def get(self, id):
         return mostrarAlumno(id), 200
 
