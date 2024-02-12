@@ -23,7 +23,7 @@ def create_app(settings_module):
 
    app = Flask(__name__)
    app.config.from_object(settings_module)
-   app.config["JWT_SECRET_KEY"] = app.config['SECRET_KEY']
+   
    app.config["JWT_TOKEN_LOCATION"] = ['cookies']
    app.config["JWT_COOKIE_CSRF_PROTECT"] = True
    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
@@ -36,6 +36,7 @@ def create_app(settings_module):
    mail.init_app(app)
 
    cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'https://oxfordaltagracia.com.ar/'}})
+   #cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
    jwt = JWTManager(app)
 
    def user_identity_lookup(alumno):
