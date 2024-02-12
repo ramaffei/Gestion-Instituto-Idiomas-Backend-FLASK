@@ -36,8 +36,8 @@ def create_app(settings_module):
    migrate.init_app(app, db)
    mail.init_app(app)
 
-   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'https://oxfordaltagracia.com.ar/'}})
-   #cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
+   #cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'https://oxfordaltagracia.com.ar/'}})
+   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
    jwt = JWTManager(app)
 
    @jwt.user_identity_loader
