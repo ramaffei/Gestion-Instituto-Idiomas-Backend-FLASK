@@ -121,8 +121,8 @@ def enviarCorreoInscripcion(data):
     programa = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.programa}">Descargar Programa</a></p>'
     material = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.material}">Descargar Guia de Materiales</a></p>'
 
-    html = html+programa
-    html = html+material
+    html = html+programa if curso and curso.nivel.programa else html
+    html = html+material if curso and curso.nivel.material else html
 
     html = html + '<p style="margin-top:12px; margin-bottom: 3px;">Estos son los datos que tenemos en nuestro sistema:</p>'
     
