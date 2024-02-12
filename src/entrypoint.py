@@ -24,6 +24,7 @@ def create_app(settings_module):
    app = Flask(__name__)
    app.config.from_object(settings_module)
    
+   app.config["JWT_SECRET_KEY"] = 'LaCLAbeSeCrEtAoXf0Rd' 
    app.config["JWT_TOKEN_LOCATION"] = ['cookies']
    app.config["JWT_COOKIE_CSRF_PROTECT"] = True
    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
@@ -46,7 +47,6 @@ def create_app(settings_module):
    @jwt.user_lookup_loader
    def user_lookup_callback(_jwt_header, jwt_data):
       identity = jwt_data["sub"]
-      print(identity)
       return mostrarAlumno(identity)
    
    @app.after_request
