@@ -61,6 +61,7 @@ def listarCursosInscripcion():
             'nombre': curso.nombre,
             'horario': curso.horario,
             'descripcion': curso.descripcion,
+            'cupo': calcularCupo(curso, alumnos),
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
             'aula': curso.aula.nombre,
 
@@ -94,6 +95,7 @@ def listarCursoMod(id, user=None):
             'nombre': curso.nombre,
             'horario': curso.horario,
             'descripcion': curso.descripcion,
+            'cupo': calcularCupo(curso, alumnos),
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
             'representacion': curso.aula.representacion,
         }
