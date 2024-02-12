@@ -27,7 +27,7 @@ class AlumnosLogin(Resource):
     @jwt_required()
     def get(self):
         print(current_user)
-        return  json.dumps(current_user), 200
+        return {'msg': 'hola manolo'}, 200
 
     def post(self):
         data = request.get_json()
