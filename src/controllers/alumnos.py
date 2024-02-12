@@ -26,7 +26,6 @@ class AlumnoInd(Resource):
 class AlumnosLogin(Resource):
     @jwt_required()
     def get(self):
-        print(current_user)
         return current_user, 200
 
     def post(self):
