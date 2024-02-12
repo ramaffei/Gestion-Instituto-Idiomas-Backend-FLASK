@@ -1,4 +1,5 @@
-from src.services.alumnos import consultarAlumnosPorCurso
+from src.models.alumnos import Alumno, AlumnoSchema
+from src.services.alumnos import comprobarCursoAlumno, comprobarIdiomaAlumno, consultarAlumnosPorCurso
 from src.exceptions.errors import ObjectNotFound
 from src.models.cursos import Curso, CursoHorario, CursoModSchema, CursoSchema, Horario, HorarioSchema
 
@@ -59,7 +60,6 @@ def listarCursosInscripcion():
             'id': curso.id,
             'nombre': curso.nombre,
             'horario': curso.horario,
-            'cupo': calcularCupo(curso, alumnos),
             'descripcion': curso.descripcion,
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
             'aula': curso.aula.nombre,
@@ -77,17 +77,22 @@ def listarCursosInscripcion():
     
     return CursoModSchema().dump(cursosMod, many=True)
 
-def listarCursoMod(id):
+def listarCursoMod(id, user=None):
     curso = Curso.get_by_id(id)
+
     if curso is None:
         raise ObjectNotFound('El curso no existe')
+    
+    if user is not None:
+        alumno = Alumno.get_by_id(user['id'])
+        comprobarCursoAlumno(id, alumno)
+        comprobarIdiomaAlumno(id, alumno)
+
     alumnos = consultarAlumnosPorCurso(id)
-    print(curso)
     cursoMod = {
             'id': curso.id,
             'nombre': curso.nombre,
             'horario': curso.horario,
-            'cupo': calcularCupo(curso, alumnos),
             'descripcion': curso.descripcion,
             'estado_inscripcion': verificarInscripcion(curso, alumnos),
             'representacion': curso.aula.representacion,

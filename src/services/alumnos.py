@@ -138,9 +138,9 @@ def enviarCorreoInscripcion(data):
 
 def comprobarCursoAlumno(curso_id, alumno):
     if any(c.id == curso_id for c in alumno.cursos):
-        raise ObjectNotFound("Ya te encuentras inscripto a este curso")
+        raise UnAuthorize("Ya te encuentras inscripto a este curso")
         
 def comprobarIdiomaAlumno(curso_id, alumno):
     curso = Curso.get_by_id(curso_id)
     if curso and any(i.id == curso.nivel.idioma.id for i in alumno.idiomas):
-        raise ObjectNotFound('Ya te encuentras inscripto a un curso de este idioma')
+        raise UnAuthorize('Ya te encuentras inscripto a un curso de este idioma')
