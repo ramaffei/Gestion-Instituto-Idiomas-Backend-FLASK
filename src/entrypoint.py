@@ -39,6 +39,7 @@ def create_app(settings_module):
    #cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
    jwt = JWTManager(app)
 
+   @jwt.user_identity_loader
    def user_identity_lookup(alumno):
       return alumno
 
