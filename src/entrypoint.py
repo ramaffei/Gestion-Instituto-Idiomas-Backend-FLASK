@@ -19,13 +19,11 @@ from src.routes.usuarios import usuarios_bp
 from src.routes.auth import auth_bp
 from src.routes.archivos import archivos_bp
 
-from src.models import alumnos, aulas, cursos, niveles, usuarios
-
 def create_app(settings_module):
 
    app = Flask(__name__)
    app.config.from_object(settings_module)
-   app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+   app.config["JWT_SECRET_KEY"] = app.config['SECRET_KEY']
    app.config["JWT_TOKEN_LOCATION"] = ['cookies']
    app.config["JWT_COOKIE_CSRF_PROTECT"] = True
    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
@@ -37,7 +35,7 @@ def create_app(settings_module):
    migrate.init_app(app, db)
    mail.init_app(app)
 
-   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
+   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://oxfordaltagracia.com.ar/'}})
    jwt = JWTManager(app)
 
    def user_identity_lookup(alumno):
@@ -46,7 +44,6 @@ def create_app(settings_module):
    @jwt.user_lookup_loader
    def user_lookup_callback(_jwt_header, jwt_data):
       identity = jwt_data["sub"]
-      print(identity)
       return mostrarAlumno(identity)
    
    @app.after_request
@@ -55,8 +52,6 @@ def create_app(settings_module):
          exp_timestamp = get_jwt()["exp"]
          now = datetime.now(timezone.utc)
          target_timestamp = datetime.timestamp(now + timedelta(minutes=5))
-         print('target', target_timestamp)
-         print('exp', exp_timestamp)
          if target_timestamp > exp_timestamp:
                print('update token')
                access_token = create_access_token(identity=get_jwt_identity())
@@ -79,8 +74,8 @@ def create_app(settings_module):
    app.register_blueprint(archivos_bp, url_prefix='/archivos')
    
    # Registra manejadores de errores personalizados
-   #if settings_module != 'config.local':
-   got_request_exception.connect(custom_api_error_handler, app)
-   register_error_handlers(app)
+   if settings_module != 'config.local':
+      got_request_exception.connect(custom_api_error_handler, app)
+      register_error_handlers(app)
    return app
 
