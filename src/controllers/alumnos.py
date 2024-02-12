@@ -1,3 +1,4 @@
+import json
 from flask_jwt_extended import current_user, jwt_required
 from flask_restful import Resource
 from flask import request
@@ -26,7 +27,7 @@ class AlumnosLogin(Resource):
     @jwt_required()
     def get(self):
         print(current_user)
-        return current_user, 200
+        return  json.dumps(current_user), 200
 
     def post(self):
         data = request.get_json()
