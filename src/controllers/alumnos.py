@@ -1,5 +1,5 @@
 import json
-from flask_jwt_extended import current_user, jwt_required
+from flask_jwt_extended import current_user, get_current_user, jwt_required
 from flask_restful import Resource
 from flask import jsonify, request
 from src.services.alumnos import actualizarAlumno, agregarAlumno, borrarAlumno, desasociarAlumnoCurso, enviarCorreoInscripcion, mostrarAlumno, mostrarAlumnos,consultarAlumnosPorCurso, exportAlumnosPorCurso, registrarAlumno
@@ -26,8 +26,7 @@ class AlumnoInd(Resource):
 class AlumnosLogin(Resource):
     @jwt_required()
     def get(self):
-        print(jsonify(current_user))
-        return jsonify(current_user)
+        return get_current_user()
 
     def post(self):
         data = request.get_json()
