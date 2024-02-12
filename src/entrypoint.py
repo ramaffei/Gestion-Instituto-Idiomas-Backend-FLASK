@@ -24,7 +24,6 @@ def create_app(settings_module):
    app = Flask(__name__)
    app.config.from_object(settings_module)
    
-   app.config["JWT_SECRET_KEY"] = 'LaCLAbeSeCrEtAoXf0Rd' 
    app.config["JWT_TOKEN_LOCATION"] = ['cookies']
    app.config["JWT_COOKIE_CSRF_PROTECT"] = True
    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
@@ -36,8 +35,8 @@ def create_app(settings_module):
    migrate.init_app(app, db)
    mail.init_app(app)
 
-   #cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'https://oxfordaltagracia.com.ar/'}})
-   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
+   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'https://oxfordaltagracia.com.ar/'}})
+   #cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'http://localhost:4200'}})
    jwt = JWTManager(app)
 
    @jwt.user_identity_loader
@@ -77,9 +76,9 @@ def create_app(settings_module):
    app.register_blueprint(archivos_bp, url_prefix='/archivos')
    
    # Registra manejadores de errores personalizados
-   """    if settings_module != 'config.local':
+   if settings_module != 'config.local':
       got_request_exception.connect(custom_api_error_handler, app)
-      register_error_handlers(app) """
+      register_error_handlers(app)
    
    return app
 

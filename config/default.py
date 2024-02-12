@@ -24,3 +24,6 @@ MAIL_USERNAME = os.getenv('MAIL_USERNAME')
 MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 MAIL_USE_TLS = True
 DONT_REPLY_FROM_EMAIL = f"(Oxford Alta Gracia, noresponder@oxfordaltagracia.com.ar)"
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+JWT_SECRET_KEY = SECRET_KEY
