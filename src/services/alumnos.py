@@ -105,22 +105,22 @@ def enviarCorreoInscripcion(data):
     curso_id = data.get('curso_id')
     curso = Curso.get_by_id(curso_id)
     if curso is None:
-        raise ObjectNotFound('No se encontro el curso')
+        raise ObjectNotFound('No se encontró el curso')
     
     alumno_id = data.get('alumno_id')
     alumno = Alumno.get_by_id(alumno_id)
     if alumno is None:
-        raise ObjectNotFound('No se encontro el alumno')
+        raise ObjectNotFound('No se encontró el alumno')
     
     html = f"""<body style='color: black; font-weigh: 600;'><h3>Bienvenido {alumno.nombre} a Oxford!</h2>
-    <p>Te encuentras inscripto en el siguiente curso:</p>
+    <p>Te encuentras Inscripto en el siguiente curso:</p>
     <h3 style="margin-bottom:6px;">{curso.nombre}</h3>"""
 
     for horario in curso.horario:
         horario_text = f'<p style="color: blue; margin-bottom: 0px; margin-top:0px;">{horario.diaSemana} de {horario.horaInicio} a {horario.horaFin}</p>'
         html = html+horario_text
     
-    html = html+'<p style="margin-top:12px; margin-bottom: 3px;"><b>Archivos Utiles:</b></p>'
+    html = html+'<p style="margin-top:12px; margin-bottom: 3px;"><b>Archivos Útiles:</b></p>'
     programa = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.programa}">Descargar Programa</a></p>'
     material = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.material}">Descargar Guia de Materiales</a></p>'
 
@@ -132,12 +132,21 @@ def enviarCorreoInscripcion(data):
     alumno_datos = f"""<p style="margin-bottom:0px; margin-top:1px;"><b>DNI:</b> { alumno.dni }</p style="margin-bottom:0px; margin-top:1px;">
     <p style="margin-bottom:0px; margin-top:1px;"><b>Fecha de Nacimiento:</b> { alumno.fecha_nacimiento }</p style="margin-bottom:0px; margin-top:1px;">
     <p style="margin-bottom:0px; margin-top:1px;"><b>Nombre Completo:</b> { alumno.nombre_completo }</p style="margin-bottom:0px; margin-top:1px;">
-    <p>Si alguno de estos datos es incorrecto por favor comunicate con el instituto para rectificarlos.
+    <p>Si alguno de estos datos es incorrecto por favor comunícate con el instituto para rectificarlos.
     """
     html = html+alumno_datos
     html = html+'<p>Nos vemos pronto!</p></body>'
 
-    send_email('Bienvenido a Oxford!', ('Oxford Alta Gracia', 'noresponder@oxfordaltagracia.com.ar'), [alumno.email], '',html_body=html)
+    text_body = f"""Bienvenido Rodrigo a Oxford!
+Te encuentras Inscripto en el siguiente curso:
+{curso.nombre}
+Estos son los datos que tenemos en nuestro sistema:
+DNI: {alumno.dni}
+Fecha de Nacimiento: {alumno.fecha_nacimiento}
+Nombre Completo: {alumno.nombre_completo}
+Si alguno de estos datos es incorrecto por favor comunícate con el instituto para rectificarlos.
+Nos vemos pronto!"""
+    send_email('Bienvenido a Oxford!', ('Oxford Alta Gracia', 'noresponder@oxfordaltagracia.com.ar'), ['test-okwdijtsv@srv1.mail-tester.com'], text_body, html_body=html)
 
 def comprobarCursoAlumno(curso_id, alumno):
     if any(c.id == curso_id for c in alumno.cursos):
