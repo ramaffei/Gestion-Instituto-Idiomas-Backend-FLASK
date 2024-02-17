@@ -65,7 +65,8 @@ def registrarAlumno(dni, email):
     alumno = Alumno.get_by_dni(dni)
 
     if alumno is None:
-        alumno = Alumno({'dni': dni, 'email': email})
+        alumnoSchema = AlumnoSchema().load({'dni': dni, 'email': email})
+        alumno = Alumno(**alumnoSchema)
         alumno.save()
 
     if not alumno.email == email:
