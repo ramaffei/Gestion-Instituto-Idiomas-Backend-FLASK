@@ -80,7 +80,7 @@ def registrarAlumno(dni, email):
 
     access_token = create_access_token(identity=alumno.id)
     response = jsonify({'alumno': alumno_json})
-    print(response)
+
     set_access_cookies(response, access_token)
     return response
 
@@ -102,7 +102,6 @@ def exportAlumnosPorCurso(curso_id):
     return {'result': 'ok'}
 
 def enviarCorreoInscripcion(data):
-    print(data)
     curso_id = data.get('curso_id')
     curso = Curso.get_by_id(curso_id)
     if curso is None:

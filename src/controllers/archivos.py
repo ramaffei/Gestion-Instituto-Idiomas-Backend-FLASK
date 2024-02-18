@@ -8,7 +8,7 @@ class Upload(Resource):
             return {'error': 'No se encuentra el archivo'}
         file = request.files['file']
         folder = request.form['folder']
-        print(folder)
+
         url_file = upload_file(file, folder)
         return {'url': url_file}
 

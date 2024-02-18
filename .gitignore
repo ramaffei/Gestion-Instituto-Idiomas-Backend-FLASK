@@ -1,0 +1,10 @@
+/migrations
+*.wsgi
+.git-ftp-ignore
+/.venv
+__pycache__/
+*.py[cod]
+/src/__pycache__/
+/__pycache__
+app.wsgi
+*.pyc

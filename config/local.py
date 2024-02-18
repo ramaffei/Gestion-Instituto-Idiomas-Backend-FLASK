@@ -12,6 +12,3 @@ BD_HOST = 'localhost'
 BD_NAME = 'enrollFun'
 
 SQLALCHEMY_DATABASE_URI = f'{BD_TYPE}://{BD_USER}:{BD_PASSWORD}@{BD_HOST}/{BD_NAME}'
-
-
-print(APP_ENV)

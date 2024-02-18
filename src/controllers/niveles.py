@@ -42,5 +42,4 @@ class LenguajeInd(Resource):
     
 class NivelesPorId(Resource):
     def get(self, lenguaje_id):
-        print('idioma')
         return listarNivelesPorIdioma(lenguaje_id)
