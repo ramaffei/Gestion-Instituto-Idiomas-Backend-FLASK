@@ -112,7 +112,7 @@ def enviarCorreoInscripcion(data):
     if alumno is None:
         raise ObjectNotFound('No se encontró el alumno')
     
-    html = f"""<body style='color: black; font-weigh: 600;'><h3>Bienvenido {alumno.nombre} a Oxford!</h2>
+    html = f"""<body style='color: black; font-weigh: 600;'><h2>Bienvenido {alumno.nombre} a Oxford!</h2>
     <p>Te encuentras Inscripto en el siguiente curso:</p>
     <h3 style="margin-bottom:6px;">{curso.nombre}</h3>"""
 
@@ -120,22 +120,31 @@ def enviarCorreoInscripcion(data):
         horario_text = f'<p style="color: blue; margin-bottom: 0px; margin-top:0px;">{horario.diaSemana} de {horario.horaInicio} a {horario.horaFin}</p>'
         html = html+horario_text
     
-    html = html+'<p style="margin-top:12px; margin-bottom: 3px;"><b>Archivos Útiles:</b></p>'
-    programa = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.programa}">Descargar Programa</a></p>'
-    material = f'<p style="margin-top:0px; margin-bottom:0px"><a href="{curso.nivel.material}">Descargar Guia de Materiales</a></p>'
+    inicio_clases = """<h3 style="margin-bottom:3px;">INICIO DE CLASES:</h3> 
+    <p style="margin-bottom:0px; margin-top:1px;">📌 <b>MIÉRCOLES 3 DE ABRIL <i>(para grupos de lunes y miércoles)</i></b></p>    
+    <p style="margin-bottom:0px; margin-top:1px;">📌 <b>JUEVES 4 DE ABRIL <i>(para grupos de martes y jueves)</i></b></p>
+    <p style="margin-bottom:0px; margin-top:1px;">📌 <b>SÁBADO 6 DE ABRIL <i>(para los super acelerados principiantes)</i></b></p>"""
+    
+    html = html+inicio_clases
+
+    html = html+'<h3 style="margin-bottom: 3px;">ARCHIVOS ÚTILES:</h3>'
+    programa = f'<p style="margin-top:1px; margin-bottom:0px;"><a href="{curso.nivel.programa}">Descargar Programa</a></p>'
+    material = f'<p style="margin-top:1px; margin-bottom:0px;"><a href="{curso.nivel.material}">Descargar Guia de Materiales</a></p>'
 
     html = html+programa if curso and curso.nivel.programa else html
     html = html+material if curso and curso.nivel.material else html
 
-    html = html + '<p style="margin-top:12px; margin-bottom: 3px;">Estos son los datos que tenemos en nuestro sistema:</p>'
+    html = html + '<h3 style="margin-bottom: 3px;">TUS DATOS:</h3>'
     
-    alumno_datos = f"""<p style="margin-bottom:0px; margin-top:1px;"><b>DNI:</b> { alumno.dni }</p style="margin-bottom:0px; margin-top:1px;">
-    <p style="margin-bottom:0px; margin-top:1px;"><b>Fecha de Nacimiento:</b> { alumno.fecha_nacimiento }</p style="margin-bottom:0px; margin-top:1px;">
-    <p style="margin-bottom:0px; margin-top:1px;"><b>Nombre Completo:</b> { alumno.nombre_completo }</p style="margin-bottom:0px; margin-top:1px;">
-    <p>Si alguno de estos datos es incorrecto por favor comunícate con el instituto para rectificarlos.
+    alumno_datos = f"""<p style="margin-bottom:0px; margin-top:1px;"><b>DNI:</b> { alumno.dni }</p>
+    <p style="margin-bottom:0px; margin-top:1px;"><b>FECHA DE NACIMIENTO:</b> { alumno.fecha_nacimiento }</p>
+    <p style="margin-bottom:0px; margin-top:1px;"><b>NOMBRE COMPLETO:</b> { alumno.nombre_completo }</p>
+    <p><i>Si alguno de estos datos es incorrecto por favor comunícate con el instituto para rectificarlos.</i></p>
     """
+
     html = html+alumno_datos
-    html = html+'<p>Nos vemos pronto!</p></body>'
+    
+    html = html+'<h3>Nos vemos pronto!</h3></body>'
 
     text_body = f"""Bienvenido Rodrigo a Oxford!
 Te encuentras Inscripto en el siguiente curso:
@@ -145,8 +154,10 @@ DNI: {alumno.dni}
 Fecha de Nacimiento: {alumno.fecha_nacimiento}
 Nombre Completo: {alumno.nombre_completo}
 Si alguno de estos datos es incorrecto por favor comunícate con el instituto para rectificarlos.
+INICIO DE CLASES: MIÉRCOLES 3 DE ABRIL (para grupos de lunes y miércoles) 
+JUEVES 4 (para grupos de martes y jueves) y SÁBADO 6 (para los super acelerados principiantes)
 Nos vemos pronto!"""
-    send_email('Bienvenido a Oxford!', ('Oxford Alta Gracia', 'noresponder@oxfordaltagracia.com.ar'), ['test-okwdijtsv@srv1.mail-tester.com'], text_body, html_body=html)
+    send_email('Bienvenido a Oxford!', ('Oxford Alta Gracia', 'noresponder@oxfordaltagracia.com.ar'), [alumno.email], text_body, html_body=html)
 
 def comprobarCursoAlumno(curso_id, alumno):
     if any(c.id == curso_id for c in alumno.cursos):
