@@ -19,6 +19,6 @@ def custom_api_error_handler(exception):
     payload['description'] = exception.description
     status_code = exception.code
   else:
-    payload['description'] = exception.args
+    payload['description'] = "Ocurrio un error en el servidor, por favor revise los datos"
     status_code = 500
   return jsonify(payload), status_code
