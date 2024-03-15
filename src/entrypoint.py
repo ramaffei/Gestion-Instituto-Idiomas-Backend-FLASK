@@ -3,6 +3,8 @@ from flask import Flask, got_request_exception
 
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt, get_jwt_identity, set_access_cookies
+
+from src.services.usuarios import mostrarUsuario
 from src.services.alumnos import mostrarAlumno
 from src.exceptions.errors import custom_api_error_handler
 from src.exceptions.httpExceptions import register_error_handlers
@@ -35,7 +37,7 @@ def create_app(settings_module):
    migrate.init_app(app, db)
    mail.init_app(app)
 
-   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins': app.config['FRONTEND_HOST']}})
+   cors = CORS(app, supports_credentials=True, resources={r'/*': {'origins':'*'}})
    jwt = JWTManager(app)
 
    @jwt.user_identity_loader
@@ -45,6 +47,8 @@ def create_app(settings_module):
    @jwt.user_lookup_loader
    def user_lookup_callback(_jwt_header, jwt_data):
       identity = jwt_data["sub"]
+      if jwt_data.get('usuario'):
+         return mostrarUsuario(identity)
       return mostrarAlumno(identity)
    
    @app.after_request

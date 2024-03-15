@@ -14,11 +14,12 @@ def logIn(args):
         raise UnAuthorize('La contraseña es incorrecta')
     usuario_json = UsuarioSchema().dump(usuario)
 
-    access_token = create_access_token(identity=usuario_json)
+    access_token = create_access_token(identity=usuario.external_id, additional_claims={'usuario': True})
     usuario.last_login = datetime.now()
     usuario.last_token = access_token
     usuario.save()
     response = jsonify({'usuario': usuario_json})
+
     set_access_cookies(response, access_token)
     return response
 
