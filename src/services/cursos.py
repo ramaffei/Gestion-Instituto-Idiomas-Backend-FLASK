@@ -4,7 +4,8 @@ from src.exceptions.errors import ObjectNotFound
 from src.models.cursos import Curso, CursoHorario, CursoModSchema, CursoSchema, Horario, HorarioSchema
 
 def agregarCurso(args):
-    curso = CursoSchema().load(args)
+    cursoSchema = CursoSchema().load(args)
+    curso = cursoSchema(**cursoSchema)
     curso.save()
     return CursoSchema().dump(curso)
 
