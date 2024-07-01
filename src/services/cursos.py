@@ -5,7 +5,7 @@ from src.models.cursos import Curso, CursoHorario, CursoModSchema, CursoSchema, 
 
 def agregarCurso(args):
     cursoSchema = CursoSchema().load(args)
-    curso = cursoSchema(**cursoSchema)
+    curso = Curso(**cursoSchema)
     curso.save()
     return CursoSchema().dump(curso)
 
