@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import jsonify
-from src.exceptions.errors import ObjectNotFound, UnAuthorize
+from src.exceptions.errors import UnAuthorize
 from flask_jwt_extended import create_access_token, set_access_cookies, unset_access_cookies
 from src.models.usuarios import Usuario, UsuarioSchema
 

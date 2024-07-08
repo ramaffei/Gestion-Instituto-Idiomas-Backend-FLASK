@@ -1,8 +1,7 @@
 
-from pathlib import Path
 from src.exceptions.errors import ObjectNotFound
 import os
-from flask import json, send_from_directory, url_for
+from flask import send_from_directory
 from werkzeug.utils import secure_filename
 
 DOMAIN_FOLDER =  os.getenv('DOMAIN_FOLDER')

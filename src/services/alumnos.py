@@ -1,11 +1,10 @@
-from datetime import datetime
-from flask import current_app, jsonify
+from flask import jsonify
 from flask_jwt_extended import create_access_token, set_access_cookies
 from sqlalchemy import and_
 from src.middlewares.mail import send_email
-from src.models.cursos import Curso, CursoSchema
+from src.models.cursos import Curso
 from src.exceptions.errors import ObjectNotFound, UnAuthorize
-from src.models.alumnos import Alumno, AlumnoCursoSchema, AlumnoSchema, AlumnosCursos
+from src.models.alumnos import Alumno, AlumnoSchema, AlumnosCursos
 import pandas as pd
 
 def agregarAlumno(args):
@@ -19,7 +18,7 @@ def agregarAlumno(args):
             comprobarIdiomaAlumno(curso_id, alumno)
             cursos_alumnos = AlumnosCursos(curso_id = curso_id, alumno_id = alumno.id)
             cursos_alumnos.save()
-        except:
+        except Exception:
             raise ObjectNotFound('Ocurrió un error al inscribirte a este curso')
         
     alumno.save()
@@ -48,7 +47,7 @@ def actualizarAlumno(id, args):
             comprobarIdiomaAlumno(curso_id, alumno)
             cursos_alumnos = AlumnosCursos(curso_id = curso_id, alumno_id = alumno.id)
             cursos_alumnos.save()
-        except:
+        except Exception:
             raise ObjectNotFound('Ocurrio un error al inscribirte a este curso')
         
     alumno.update(alumnoSchema)
@@ -121,9 +120,7 @@ def enviarCorreoInscripcion(data):
         html = html+horario_text
     
     inicio_clases = """<h3 style="margin-bottom:3px;">INICIO DE CLASES:</h3> 
-    <p style="margin-bottom:0px; margin-top:1px;">📌 <b>MIÉRCOLES 3 DE ABRIL <i>(para grupos de lunes y miércoles)</i></b></p>    
-    <p style="margin-bottom:0px; margin-top:1px;">📌 <b>JUEVES 4 DE ABRIL <i>(para grupos de martes y jueves)</i></b></p>
-    <p style="margin-bottom:0px; margin-top:1px;">📌 <b>SÁBADO 6 DE ABRIL <i>(para los super acelerados principiantes)</i></b></p>"""
+    <p style="margin-bottom:0px; margin-top:1px;">📌 <b>LUNES 5 DE AGOSTO</b></p>"""
     
     html = html+inicio_clases
 

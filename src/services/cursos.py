@@ -1,4 +1,4 @@
-from src.models.alumnos import Alumno, AlumnoSchema
+from src.models.alumnos import Alumno
 from src.services.alumnos import comprobarCursoAlumno, comprobarIdiomaAlumno, consultarAlumnosPorCurso
 from src.exceptions.errors import ObjectNotFound
 from src.models.cursos import Curso, CursoHorario, CursoModSchema, CursoSchema, Horario, HorarioSchema
