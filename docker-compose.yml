@@ -16,10 +16,12 @@ services:
                 gunicorn --bind 0.0.0.0:5000 app:app;
              fi"
     depends_on:
-      db:
+      pma:
         condition: service_healthy
       redis:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
 
   debug:
     container_name: debug
@@ -47,12 +49,12 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./.backups/backup.sql:/docker-entrypoint-initdb.d/init.sql # Archivo SQL a ejecutar
+      - ./.backups/bd-oxford-tests.sql:/docker-entrypoint-initdb.d/init.sql # Archivo SQL a ejecutar
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
+      interval: 15s
+      timeout: 30s
+      retries: 10
 
   pma:
     image: phpmyadmin
@@ -69,11 +71,11 @@ services:
       - MYSQL_USER=${BD_USER}
       - MYSQL_PASSWORD=${BD_PASSWORD}
     healthcheck:
-      test: ["CMD", "curl", "-Ss", "http://localhost:8080/robots.txt"]
-      start_period: 5s
-      interval: 3s
-      timeout: 40s
-      retries: 10
+      test: ["CMD", "curl", "-fLs", "http://localhost:80/"]
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
       db:
         condition: service_healthy
@@ -94,7 +96,9 @@ services:
   migrations:
     container_name: migrations
     <<: *appbase
-    depends_on: {}
+    depends_on:
+      db: 
+        condition: service_healthy
     command: flask db upgrade
 
 volumes:

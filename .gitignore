@@ -1,11 +1,12 @@
-/migrations
 *.wsgi
+*.sql
 .git-ftp-ignore
 /.venv
+__pycache__
 __pycache__/
 *.py[cod]
 /src/__pycache__/
-/__pycache__
+*/*/__pycache__/
 app.wsgi
 *.pyc
 *.env

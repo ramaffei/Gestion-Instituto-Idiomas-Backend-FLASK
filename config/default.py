@@ -15,7 +15,10 @@ BD_PASSWORD_ROOT = os.getenv("BD_PASSWORD_ROOT")
 BD_USER = os.getenv("BD_USER")
 BD_NAME = os.getenv("BD_NAME")
 BD_PASSWORD = os.getenv("BD_PASSWORD")
-SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
+SQLALCHEMY_DATABASE_URI = os.getenv(
+    "SQLALCHEMY_DATABASE_URI",
+    f"mysql+pymysql://{BD_USER}:{BD_PASSWORD}@localhost/{BD_NAME}",
+)
 
 # App environments
 APP_ENV = os.getenv("FLASK_ENV", "production")
