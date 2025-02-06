@@ -8,3 +8,13 @@ __pycache__/
 /__pycache__
 app.wsgi
 *.pyc
+*.env
+*.log
+*.sqlite3
+*.db
+*.bak
+*.swp
+*.python-version
+/.vscode
+/.backups
+/.backups/*
