@@ -1,4 +1,4 @@
-from src.models.alumnos import Alumno
+from src.models.alumnos import Alumno, safe_get
 from src.services.alumnos import comprobarCursoAlumno, comprobarIdiomaAlumno, consultarAlumnosPorCurso
 from src.exceptions.errors import ObjectNotFound
 from src.models.cursos import Curso, CursoHorario, CursoModSchema, CursoSchema, Horario, HorarioSchema
@@ -57,16 +57,17 @@ def listarCursosInscripcion():
     cursosMod = []
     for curso in cursos[0]:
         alumnos = consultarAlumnosPorCurso(curso.id)
-        cursosMod.append( {
-            'id': curso.id,
-            'nombre': curso.nombre,
-            'horario': curso.horario,
-            'descripcion': curso.descripcion,
-            'cupo': calcularCupo(curso, alumnos),
-            'estado_inscripcion': verificarInscripcion(curso, alumnos),
-            'aula': curso.aula.nombre,
-
-        })
+        cursosMod.append(
+            {
+                "id": curso.id,
+                "nombre": curso.nombre,
+                "horario": curso.horario,
+                "descripcion": curso.descripcion,
+                "cupo": calcularCupo(curso, alumnos),
+                "estado_inscripcion": verificarInscripcion(curso, alumnos),
+                "aula": safe_get(curso,"aula.nombre"),
+            }
+        )
         try:
             if curso.nivel:
                 cursosMod[-1]['nivel'] = curso.nivel.nombre

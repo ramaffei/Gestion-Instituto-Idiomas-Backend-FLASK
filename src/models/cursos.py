@@ -11,8 +11,12 @@ class Curso(db.Model, BaseModelMixin):
     __tablename__ = "cursos"
     id = Column(Integer, primary_key=True)
 
-    nivel_id = Column(Integer, ForeignKey("niveles.id"))
-    aula_id = Column(Integer, ForeignKey("aulas.id"))
+    nivel_id = Column(
+        Integer, ForeignKey("niveles.id", ondelete="SET NULL"), nullable=True
+    )
+    aula_id = Column(
+        Integer, ForeignKey("aulas.id", ondelete="SET NULL"), nullable=True
+    )
     inscripcion_id = Column(Integer, ForeignKey("inscripciones.id"))
     creador_id = Column(Integer, ForeignKey("usuarios.id"))
 
@@ -25,8 +29,8 @@ class Curso(db.Model, BaseModelMixin):
 
     created_at = Column(db.DateTime, default=lambda: datetime.now(), nullable=True)
 
-    nivel = db.relationship("Nivel", lazy="joined")
-    aula = db.relationship("Aula", lazy="joined")
+    nivel = db.relationship("Nivel", lazy="joined", passive_deletes=True)
+    aula = db.relationship("Aula", lazy="joined", passive_deletes=True)
     inscripcion = db.relationship("Inscripcion", lazy="joined")
     estado_inscripcion = db.relationship("EstadoInscripcion", lazy="joined")
 
