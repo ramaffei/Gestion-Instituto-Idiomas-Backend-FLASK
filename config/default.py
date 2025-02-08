@@ -10,20 +10,33 @@ ERROR_404_HELP = False
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SHOW_SQLALCHEMY_LOG_MESSAGES = False
 
+# Configuración de la base de datos
+BD_PASSWORD_ROOT = os.getenv("BD_PASSWORD_ROOT")
+BD_USER = os.getenv("BD_USER")
+BD_NAME = os.getenv("BD_NAME")
+BD_PASSWORD = os.getenv("BD_PASSWORD")
+SQLALCHEMY_DATABASE_URI = os.getenv(
+    "SQLALCHEMY_DATABASE_URI",
+    f"mysql+pymysql://{BD_USER}:{BD_PASSWORD}@localhost/{BD_NAME}",
+)
+
 # App environments
-APP_ENV_LOCAL = 'local'
-APP_ENV_DEVELOPMENT = 'development'
-APP_ENV_PRODUCTION = 'production'
-APP_ENV = ''
+APP_ENV = os.getenv("FLASK_ENV", "production")
+FLASK_DEBUG = bool(os.getenv("DEBUG", False))
 
 # Configuración del email
-
-MAIL_SERVER = 'mail.oxfordaltagracia.com.ar'
+MAIL_SERVER = "mail.oxfordaltagracia.com.ar"
 MAIL_PORT = 587
-MAIL_USERNAME = os.getenv('MAIL_USERNAME')
-MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 MAIL_USE_TLS = True
-DONT_REPLY_FROM_EMAIL = f"(Oxford Alta Gracia, noresponder@oxfordaltagracia.com.ar)"
+DONT_REPLY_FROM_EMAIL = "(Oxford Alta Gracia, noresponder@oxfordaltagracia.com.ar)"
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+# Configuracion secret key
+SECRET_KEY = os.getenv("SECRET_KEY")
 JWT_SECRET_KEY = SECRET_KEY
+
+# Configuración de la URL del frontend
+FRONTEND_HOST = os.getenv("FRONTEND_HOST")
+HOST = os.getenv("HOST")
+DOMAIN_FOLDER = os.getenv("DOMAIN_FOLDER")

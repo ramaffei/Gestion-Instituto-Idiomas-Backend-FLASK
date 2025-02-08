@@ -1,4 +1,4 @@
-from src.models.alumnos import Alumno
+from src.models.alumnos import Alumno, safe_get
 from src.services.alumnos import comprobarCursoAlumno, comprobarIdiomaAlumno, consultarAlumnosPorCurso
 from src.exceptions.errors import ObjectNotFound
 from src.models.cursos import Curso, CursoHorario, CursoModSchema, CursoSchema, Horario, HorarioSchema
@@ -26,6 +26,11 @@ def actualizarCurso(id, args):
     cursoSchema = CursoSchema().load(args)
     curso.update(cursoSchema)
     return CursoSchema().dump(curso)
+
+def actualizarOrdenCursos(list):
+    cursoSchema = CursoModSchema().load(list, many=True, partial=True)
+    Curso.bulk_update(cursoSchema)
+    return cursoSchema
 
 def borrarCurso(id):
     curso = Curso.get_by_id(id)
@@ -57,16 +62,18 @@ def listarCursosInscripcion():
     cursosMod = []
     for curso in cursos[0]:
         alumnos = consultarAlumnosPorCurso(curso.id)
-        cursosMod.append( {
-            'id': curso.id,
-            'nombre': curso.nombre,
-            'horario': curso.horario,
-            'descripcion': curso.descripcion,
-            'cupo': calcularCupo(curso, alumnos),
-            'estado_inscripcion': verificarInscripcion(curso, alumnos),
-            'aula': curso.aula.nombre,
-
-        })
+        cursosMod.append(
+            {
+                "id": curso.id,
+                "nombre": curso.nombre,
+                "horario": curso.horario,
+                "descripcion": curso.descripcion,
+                "orden": curso.orden_id,
+                "cupo": calcularCupo(curso, alumnos),
+                "estado_inscripcion": verificarInscripcion(curso, alumnos),
+                "aula": safe_get(curso,"aula.nombre"),
+            }
+        )
         try:
             if curso.nivel:
                 cursosMod[-1]['nivel'] = curso.nivel.nombre

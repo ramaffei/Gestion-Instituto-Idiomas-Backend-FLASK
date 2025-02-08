@@ -53,3 +53,24 @@ class BaseModelMixin:
     @classmethod
     def simple_filter(cls, **kwargs):
         return cls.query.filter_by(**kwargs).first()
+
+    @classmethod
+    def bulk_update(cls, data_list: list):
+        """
+        Actualiza múltiples registros en una sola consulta.
+
+        Parámetros:
+            data_list (list): Lista de diccionarios con los datos a actualizar.
+                              Cada diccionario debe incluir la clave primaria 'id'
+                              y los campos que se desean actualizar.
+        """
+        # Si necesitas transformar los datos (por ejemplo, para cambiar una subestructura dict a una FK),
+        # puedes aplicar transformData a cada elemento. Si no, puedes enviar data_list directamente.
+        mappings = [cls().transformData(data) if isinstance(data, dict) else data for data in data_list]
+
+        try:
+            db.session.bulk_update_mappings(cls, mappings)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e

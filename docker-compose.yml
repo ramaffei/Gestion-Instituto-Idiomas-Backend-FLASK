@@ -1,0 +1,106 @@
+services:
+  app: &appbase
+    container_name: app
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      SQLALCHEMY_DATABASE_URI: mysql+pymysql://${BD_USER}:${BD_PASSWORD}@db/${BD_NAME}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - .:/code
+    command: >
+      sh -c "if [ '$FLASK_ENV' = 'development' ]; then
+                flask run --host=0.0.0.0 --reload;
+             else
+                gunicorn --bind 0.0.0.0:5000 app:app;
+             fi"
+    depends_on:
+      pma:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+  debug:
+    container_name: debug
+    <<: *appbase
+    ports:
+      - "5000:5000"
+      - "5678:5678"
+    environment:
+      DEBUG: True
+      FLASK_ENV: development
+      SQLALCHEMY_DATABASE_URI: mysql+pymysql://${BD_USER}:${BD_PASSWORD}@db/${BD_NAME}
+      REDIS_URL: redis://redis:6379/0
+    command: >
+      sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m flask run --host=0.0.0.0 --debug --no-debugger --no-reload"
+
+  db:
+    container_name: db
+    image: mysql:8.3.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${BD_PASSWORD_ROOT}
+      MYSQL_DATABASE: ${BD_NAME}
+      MYSQL_USER: ${BD_USER}
+      MYSQL_PASSWORD: ${BD_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./.backups/bd-oxford-tests.sql:/docker-entrypoint-initdb.d/init.sql # Archivo SQL a ejecutar
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 15s
+      timeout: 30s
+      retries: 10
+
+  pma:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+      - PMA_USER=${BD_USER}
+      - PMA_PASSWORD=${BD_PASSWORD}
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=${BD_PASSWORD_ROOT}
+      - MYSQL_USER=${BD_USER}
+      - MYSQL_PASSWORD=${BD_PASSWORD}
+    healthcheck:
+      test: ["CMD", "curl", "-fLs", "http://localhost:80/"]
+      start_period: 30s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  redis:
+    image: redis/redis-stack
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    ports:
+      - 6379:6379
+      - 8001:8001
+
+  migrations:
+    container_name: migrations
+    <<: *appbase
+    depends_on:
+      db: 
+        condition: service_healthy
+    command: flask db upgrade
+
+volumes:
+  mysql_data:
+  redis_data:

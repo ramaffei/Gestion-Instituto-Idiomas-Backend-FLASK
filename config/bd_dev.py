@@ -1,9 +1,0 @@
-BD_TYPE = 'mysql+pymysql'
-BD_USER = ''
-BD_PASSWORD = r''
-BD_HOST = 'localhost'
-BD_NAME = ''
-
-SQLALCHEMY_DATABASE_URI = f'{BD_TYPE}://{BD_USER}:{BD_PASSWORD}@{BD_HOST}/{BD_NAME}'
-
-print(SQLALCHEMY_DATABASE_URI)
