@@ -27,6 +27,11 @@ def actualizarCurso(id, args):
     curso.update(cursoSchema)
     return CursoSchema().dump(curso)
 
+def actualizarOrdenCursos(list):
+    cursoSchema = CursoModSchema().load(list, many=True, partial=True)
+    Curso.bulk_update(cursoSchema)
+    return cursoSchema
+
 def borrarCurso(id):
     curso = Curso.get_by_id(id)
     if curso is None:
@@ -63,6 +68,7 @@ def listarCursosInscripcion():
                 "nombre": curso.nombre,
                 "horario": curso.horario,
                 "descripcion": curso.descripcion,
+                "orden": curso.orden_id,
                 "cupo": calcularCupo(curso, alumnos),
                 "estado_inscripcion": verificarInscripcion(curso, alumnos),
                 "aula": safe_get(curso,"aula.nombre"),

@@ -4,6 +4,7 @@ from flask import request
 from src.services.cursos import (
     actualizarCurso,
     actualizarHorario,
+    actualizarOrdenCursos,
     agregarCurso,
     agregarHorario,
     borrarCurso,
@@ -40,6 +41,9 @@ class CursoTodosMod(Resource):
     def get(self):
         return listarCursosInscripcion(), 200
 
+    def post(self):
+        data = request.get_json()
+        return actualizarOrdenCursos(data), 200
 
 class CursoIndMod(Resource):
     @jwt_required()
