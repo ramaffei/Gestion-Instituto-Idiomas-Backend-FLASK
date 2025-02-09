@@ -31,7 +31,8 @@ jobs:
             cd "$REPO_DIR"
 
             # Si no existe el directorio del repositorio, clónalo; si ya existe, actualízalo
-            if [ ! -d ]; then
+            if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+              echo "No se encuentra dentro de un repositorio Git."
               echo "Repositorio no encontrado. Clonando..."
               git clone https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_TOKEN }}@github.com/ClownsTech/enrollfun-backend.git
             else
