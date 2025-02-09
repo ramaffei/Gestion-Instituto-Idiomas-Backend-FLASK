@@ -41,8 +41,6 @@ jobs:
               git reset --hard origin/DEV
             fi
 
-            cd miapp
-
             echo "Construyendo y reiniciando contenedores con docker-compose..."
             docker-compose down
             docker-compose up -d --build
