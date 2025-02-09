@@ -46,7 +46,22 @@ jobs:
             git pull origin DEV
             git reset --hard origin/DEV
             
+            export SECRET_KEY=${{ secrets.SECRET_KEY }}
+            export MAIL_USERNAME=${{ vars.MAIL_USERNAME }}
+            export MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+            export BD_USER=${{ secrets.BD_USER }}
+            export BD_NAME=${{ secrets.BD_NAME }}
+            export BD_PASSWORD=${{ secrets.BD_PASSWORD }}
+            export FLASK_ENV=${{ vars.FLASK_ENV }}
+            export DEBUG=${{ vars.DEBUG }}
+            export HOST=${{ vars.HOST }}
+            export DOMAIN_FOLDER=${{ secrets.DOMAIN_FOLDER }}
+            export FRONTEND_HOST=${{ vars.FRONTEND_HOST }}
+
             echo "Construyendo y reiniciando contenedores con docker-compose..."
+            rm -f docker-compose.yml
+            cp docker-compose.yml.prd docker-compose.yml
+            
             docker-compose down
             docker-compose up -d --build
 
