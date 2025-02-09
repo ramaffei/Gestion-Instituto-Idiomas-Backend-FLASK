@@ -7,6 +7,18 @@ services:
       - "5000:5000"
     volumes:
       - .:/code
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      BD_USER: ${BD_USER}
+      BD_NAME: ${BD_NAME}
+      BD_PASSWORD: ${BD_PASSWORD}
+      FLASK_ENV: ${FLASK_ENV}
+      DEBUG: ${DEBUG}
+      HOST: ${HOST}
+      DOMAIN_FOLDER: ${DOMAIN_FOLDER}
+      FRONTEND_HOST: ${FRONTEND_HOST}
     command: gunicorn --bind 0.0.0.0:5000 app:app;
     extra_hosts:
       - "host.docker.internal:host-gateway"
