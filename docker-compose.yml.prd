@@ -7,7 +7,7 @@ services:
       - "5000:5000"
     volumes:
       - .:/code
-    networks_mode: host
+    network_mode: host
     environment:
       SECRET_KEY: ${SECRET_KEY}
       MAIL_USERNAME: ${MAIL_USERNAME}
