@@ -1,0 +1,12 @@
+services:
+  app:
+    container_name: app
+    restart: always
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+    command: gunicorn --bind 0.0.0.0:5000 app:app;
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
