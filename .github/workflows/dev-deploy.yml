@@ -1,0 +1,55 @@
+name: Desplegar en DEV
+
+on:
+  push:
+    branches:
+      - DEV
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Hacer checkout del código del repositorio (aunque luego clonaremos en el VPS)
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      # 2. Configurar el agente SSH con la clave privada (para conectarte al VPS)
+      - name: Configurar agente SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 3. Conectarse al VPS y clonar (o actualizar) el repositorio, reiniciar contenedores y ejecutar migraciones
+      - name: Desplegar en el VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_DOMAIN }} << 'EOF'
+            set -e
+            # Definir la ruta base donde desplegarás la aplicación
+            REPO_DIR="${{ secrets.REPO_LOCATION }}/miapp"
+
+            cd "$REPO_DIR"
+
+            # Si no existe el directorio del repositorio, clónalo; si ya existe, actualízalo
+            if [ ! -d ]; then
+              echo "Repositorio no encontrado. Clonando..."
+              git clone https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_TOKEN }}@github.com/ClownsTech/enrollfun-backend.git
+            else
+              echo "Repositorio encontrado. Actualizando..."
+              git fetch --all
+              git checkout DEV
+              git reset --hard origin/DEV
+            fi
+
+            cd miapp
+
+            echo "Construyendo y reiniciando contenedores con docker-compose..."
+            docker-compose down
+            docker-compose up -d --build
+
+            echo "Ejecutando migraciones con Alembic..."
+            # Se asume que el contenedor que ejecuta la API se llama 'app'
+            docker exec app flask db upgrade
+
+            echo "Despliegue completado exitosamente."
+          EOF

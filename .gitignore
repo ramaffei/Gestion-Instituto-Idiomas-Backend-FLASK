@@ -19,3 +19,4 @@ app.wsgi
 /.vscode
 /.backups
 /.backups/*
+*.prd
