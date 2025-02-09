@@ -34,7 +34,8 @@ jobs:
             # Si no existe el directorio del repositorio, clónalo; si ya existe, actualízalo
             if [ ! -d "${{ secrets.DEPLOY_FOLDER_NAME }}" ] || ! git -C "${{ secrets.DEPLOY_FOLDER_NAME }}" rev-parse --is-inside-work-tree > /dev/null 2>&1; then
               echo "El directorio no existe o no es un repositorio Git."
-              echo "Repositorio no encontrado. Clonando..."
+              echo "Eliminando directorio y clonando..."
+              rm -rf ${{ secrets.DEPLOY_FOLDER_NAME }}
               git clone https://${{ secrets.GH_USERNAME }}:${{ secrets.GH_TOKEN }}@github.com/ClownsTech/enrollfun-backend.git ${{ secrets.DEPLOY_FOLDER_NAME }}
             fi
 
