@@ -14,6 +14,7 @@ services:
       BD_USER: ${BD_USER}
       BD_NAME: ${BD_NAME}
       BD_PASSWORD: ${BD_PASSWORD}
+      BD_HOST: ${BD_HOST}
       FLASK_ENV: ${FLASK_ENV}
       DEBUG: ${DEBUG}
       HOST: ${HOST}

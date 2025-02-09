@@ -15,9 +15,10 @@ BD_PASSWORD_ROOT = os.getenv("BD_PASSWORD_ROOT")
 BD_USER = os.getenv("BD_USER")
 BD_NAME = os.getenv("BD_NAME")
 BD_PASSWORD = os.getenv("BD_PASSWORD")
+BD_HOST = os.getenv("BD_HOST", "localhost")
 SQLALCHEMY_DATABASE_URI = os.getenv(
     "SQLALCHEMY_DATABASE_URI",
-    f"mysql+pymysql://{BD_USER}:{BD_PASSWORD}@localhost/{BD_NAME}",
+    f"mysql+pymysql://{BD_USER}:{BD_PASSWORD}@{BD_HOST}/{BD_NAME}",
 )
 
 # App environments
