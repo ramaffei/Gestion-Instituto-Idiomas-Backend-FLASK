@@ -2,8 +2,9 @@ name: Desplegar en DEV
 
 on:
   push:
-    branches:
-      - DEV
+    branches: [ "DEV" ]
+  pull_request:
+    branches: [ "DEV" ]
 
 jobs:
   deploy:
@@ -12,7 +13,7 @@ jobs:
     steps:
       # 1. Hacer checkout del código del repositorio (aunque luego clonaremos en el VPS)
       - name: Checkout del repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 2. Configurar el agente SSH con la clave privada (para conectarte al VPS)
       - name: Configurar agente SSH
