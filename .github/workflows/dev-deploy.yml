@@ -52,6 +52,7 @@ jobs:
             export BD_USER=${{ secrets.BD_USER }}
             export BD_NAME=${{ secrets.BD_NAME }}
             export BD_PASSWORD=${{ secrets.BD_PASSWORD }}
+            export BD_HOST=${{ secrets.BD_HOST }}
             export FLASK_ENV=${{ vars.FLASK_ENV }}
             export DEBUG=${{ vars.DEBUG }}
             export HOST=${{ vars.HOST }}
