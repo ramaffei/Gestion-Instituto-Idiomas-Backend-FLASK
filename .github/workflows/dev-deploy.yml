@@ -26,7 +26,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_DOMAIN }} << 'EOF'
             set -e
             # Definir la ruta base donde desplegarás la aplicación
-            REPO_DIR="${{ secrets.REPO_LOCATION }}/miapp"
+            REPO_DIR="${{ secrets.REPO_LOCATION }}"
 
             cd "$REPO_DIR"
 
