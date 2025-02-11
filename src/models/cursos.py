@@ -162,6 +162,7 @@ class CursoSchema(BaseSchema):
 class CursoModSchema(BaseSchema):
     horario = fields.Nested("HorarioSchema", many=True)
     idioma = fields.Nested("LenguajeSchema")
+    orden_id = fields.Integer(data_key="orden")
 
     class Meta:
         fields = (
@@ -169,7 +170,7 @@ class CursoModSchema(BaseSchema):
             "nombre",
             "horario",
             "cupo",
-            "orden",
+            "orden_id",
             "descripcion",
             "representacion",
             "estado_inscripcion",
@@ -179,4 +180,4 @@ class CursoModSchema(BaseSchema):
             "material",
         )
         unknown = EXCLUDE
-        ordered = True
+        ordered = True  
