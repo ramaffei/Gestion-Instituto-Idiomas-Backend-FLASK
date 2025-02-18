@@ -65,7 +65,7 @@ jobs:
             cp docker-compose.yml.prd docker-compose.yml
             
             docker-compose down
-            docker-compose up -d --build
+            docker-compose -p ${{vars.PROJECT_NAME}} up app -d --build
 
             echo "Ejecutando migraciones con Alembic..."
             # Se asume que el contenedor que ejecuta la API se llama 'app'
