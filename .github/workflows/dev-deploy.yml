@@ -61,11 +61,11 @@ jobs:
             export FRONTEND_HOST=${{ vars.FRONTEND_HOST }}
 
             echo "Construyendo y reiniciando contenedores con docker-compose..."
-            rm -f docker-compose.yml
-            cp docker-compose.yml.prd docker-compose.yml
+            # rm -f docker-compose.yml
+            # cp docker-compose.yml.prd docker-compose.yml
             
-            docker-compose -p ${{vars.PROJECT_NAME}} down
-            docker-compose -p ${{vars.PROJECT_NAME}} up app -d --build
+            docker-compose -f docker-compose.prd.yml down
+            docker-compose -f docker-compose.prd.yml up -d --build --remove-orphans
 
             echo "Ejecutando migraciones con Alembic..."
             # Se asume que el contenedor que ejecuta la API se llama 'app'
