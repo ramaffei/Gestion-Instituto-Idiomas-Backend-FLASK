@@ -64,7 +64,7 @@ jobs:
             rm -f docker-compose.yml
             cp docker-compose.yml.prd docker-compose.yml
             
-            docker-compose down
+            docker-compose -p ${{vars.PROJECT_NAME}} down
             docker-compose -p ${{vars.PROJECT_NAME}} up app -d --build
 
             echo "Ejecutando migraciones con Alembic..."
