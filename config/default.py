@@ -27,10 +27,10 @@ FLASK_DEBUG = bool(os.getenv("DEBUG", False))
 
 # Configuración del email
 MAIL_SERVER = "mail.oxfordaltagracia.com.ar"
-MAIL_PORT = 587
+MAIL_PORT = 25
 MAIL_USERNAME = os.getenv("MAIL_USERNAME")
 MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
-MAIL_USE_TLS = True
+MAIL_USE_TLS = False
 DONT_REPLY_FROM_EMAIL = "(Oxford Alta Gracia, noresponder@oxfordaltagracia.com.ar)"
 
 # Configuracion secret key
