@@ -1,0 +1,34 @@
+Bienvenido {{ alumno.nombre }} a Oxford!
+Te encuentras Inscripto en el siguiente curso:
+{{ curso.nombre }}
+
+{% if curso.horario %}
+Horarios:
+{% for horario in curso.horario %}
+  - {{ horario.diaSemana }}: de {{ horario.horaInicio }} a {{ horario.horaFin }}
+{% endfor %}
+{% endif %}
+
+INICIO DE CLASES:
+{% if inicio_clases %}
+{% for fecha in inicio_clases %}
+  - {{ fecha }}
+{% endfor %}
+{% endif %}
+
+ARCHIVOS ÚTILES:
+{% if curso.nivel and curso.nivel.programa %}
+Programa: {{ curso.nivel.programa }}
+{% endif %}
+{% if curso.nivel and curso.nivel.material %}
+Guía de Materiales: {{ curso.nivel.material }}
+{% endif %}
+
+TUS DATOS:
+DNI: {{ alumno.dni }}
+FECHA DE NACIMIENTO: {{ alumno.fecha_nacimiento }}
+NOMBRE COMPLETO: {{ alumno.nombre_completo }}
+
+Si alguno de estos datos es incorrecto por favor comunícate con el instituto para rectificarlos.
+
+Nos vemos pronto!

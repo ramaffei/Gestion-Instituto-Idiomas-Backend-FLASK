@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bienvenido a Oxford!</title>
+  </head>
+
+  <body style="color: black; font-weight: 600">
+    <h2>Bienvenido {{ alumno.nombre }} a Oxford!</h2>
+    <p>Te encuentras Inscripto en el siguiente curso:</p>
+    <h3 style="margin-bottom: 6px">{{ curso.nombre }}</h3>
+
+    {% if curso.horario %} {% for horario in curso.horario %}
+    <p style="color: blue; margin-bottom: 0px; margin-top: 0px">
+      {{ horario.diaSemana }} de {{ horario.horaInicio }} a {{ horario.horaFin
+      }}
+    </p>
+    {% endfor %} {% endif %}
+
+    <h3 style="margin-bottom: 3px">INICIO DE CLASES:</h3>
+    {% if inicio_clases %}
+    <ul style="padding-left: 20px; margin-top: 0">
+      <li style="margin-bottom: 0px; margin-top: 1px">
+        📌 <b>{{ inicio_clases }}</b>
+      </li>
+    </ul>
+    {% endif %}
+
+    <h3 style="margin-bottom: 3px">ARCHIVOS ÚTILES:</h3>
+    {% if curso.nivel and curso.nivel.programa %}
+    <p style="margin-top: 1px; margin-bottom: 0px">
+      <a href="{{ curso.nivel.programa }}">Descargar Programa</a>
+    </p>
+    {% endif %} {% if curso.nivel and curso.nivel.material %}
+    <p style="margin-top: 1px; margin-bottom: 0px">
+      <a href="{{ curso.nivel.material }}">Descargar Guía de Materiales</a>
+    </p>
+    {% endif %}
+
+    <h3 style="margin-bottom: 3px">TUS DATOS:</h3>
+    <p style="margin-bottom: 0px; margin-top: 1px">
+      <b>DNI:</b> {{ alumno.dni }}
+    </p>
+    <p style="margin-bottom: 0px; margin-top: 1px">
+      <b>FECHA DE NACIMIENTO:</b> {{ alumno.fecha_nacimiento }}
+    </p>
+    <p style="margin-bottom: 0px; margin-top: 1px">
+      <b>NOMBRE COMPLETO:</b> {{ alumno.nombre_completo }}
+    </p>
+    <p>
+      <i
+        >Si alguno de estos datos es incorrecto por favor comunícate con el
+        instituto para rectificarlos.</i
+      >
+    </p>
+
+    <h3>Nos vemos pronto!</h3>
+  </body>
+</html>

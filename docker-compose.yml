@@ -20,8 +20,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      migrations:
-        condition: service_completed_successfully
 
   debug:
     container_name: debug
@@ -35,7 +33,7 @@ services:
       SQLALCHEMY_DATABASE_URI: mysql+pymysql://${BD_USER}:${BD_PASSWORD}@db/${BD_NAME}
       REDIS_URL: redis://redis:6379/0
     command: >
-      sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m flask run --host=0.0.0.0 --debug --no-debugger --no-reload"
+      sh -c "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m flask run --host=0.0.0.0 --debug --no-debugger --reload"
 
   db:
     container_name: db
