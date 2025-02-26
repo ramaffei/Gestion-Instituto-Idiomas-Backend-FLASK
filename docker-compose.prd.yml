@@ -6,7 +6,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ${DOMAIN_FOLDER}:/archivos
+      - ${DOMAIN_FOLDER}/archivos:/archivos
       - .:/code
     network_mode: host
     environment:
