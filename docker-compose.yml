@@ -8,6 +8,7 @@ services:
       SQLALCHEMY_DATABASE_URI: mysql+pymysql://${BD_USER}:${BD_PASSWORD}@db/${BD_NAME}
       REDIS_URL: redis://redis:6379/0
     volumes:
+      - ${DOMAIN_FOLDER}:/archivos
       - .:/code
     command: >
       sh -c "if [ '$FLASK_ENV' = 'development' ]; then

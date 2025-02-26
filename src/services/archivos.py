@@ -20,7 +20,7 @@ def upload_file(file, name_folder = ''):
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
 
-        dir = os.path.join(DOMAIN_FOLDER, DIR_BASE, name_folder)
+        dir = os.path.join(os.getcwd(), 'archivos', name_folder)
 
         os.makedirs(dir, exist_ok=True)
         
