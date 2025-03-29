@@ -5,18 +5,23 @@ INICIO_CLASES: list = [
         "fecha": "SÁBADO 5 DE ABRIL",
     },
     {
+        "dia_clases": ["LUNES"],
+        "descripcion": "Para los grupos que solo tienen clases los lunes",
+        "fecha": "LUNES 7 DE ABRIL",
+    },
+    {
         "dia_clases": ["LUNES", "MIERCOLES"],
         "descripcion": "Para los grupos de lunes y miércoles",
         "fecha": "LUNES 7 DE ABRIL",
     },
     {
-        "dia_clases": ["MARTES", "JUEVES"],
-        "descripcion": "Para los grupos de martes y jueves",
+        "dia_clases": ["MARTES"],
+        "descripcion": "Para los grupos que solo tienen clases los martes",
         "fecha": "MARTES 8 DE ABRIL",
     },
     {
-        "dia_clases": ["MARTES"],
-        "descripcion": "Para los grupos que solo tienen clases los martes",
+        "dia_clases": ["MARTES", "JUEVES"],
+        "descripcion": "Para los grupos de martes y jueves",
         "fecha": "MARTES 8 DE ABRIL",
     },
     {
